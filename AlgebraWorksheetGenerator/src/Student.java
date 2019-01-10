@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
-
 public class Student implements Comparable
 {
 	private String firstName, lastName;

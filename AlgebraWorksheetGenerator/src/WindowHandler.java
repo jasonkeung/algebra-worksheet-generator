@@ -17,7 +17,7 @@ public class WindowHandler
 	private GenerateWindow generateWindow;
 	private ScoreWindow scoreWindow;
 	private NoticeWindow noticeWindow;
-	private ArrayList<Student> students;
+	private DefaultListModel<Student> students;
 	private HashSet<Worksheet> worksheets;
 
 	public WindowHandler()
@@ -26,7 +26,7 @@ public class WindowHandler
 		studentWindow = null;
 		generateWindow = null;
 		noticeWindow = null;
-		students = new ArrayList<Student>();
+		students = new DefaultListModel<Student>();
 		worksheets = new HashSet<Worksheet>(10000);
 		loadStudents();
 	}
@@ -78,7 +78,7 @@ public class WindowHandler
 				}
 			}
 			for (Student s : studentList)
-				students.add(s);
+				students.addElement(s);
 			reader.close();
 		} catch (IOException e)
 		{
@@ -152,12 +152,20 @@ public class WindowHandler
 		this.generateWindow = generateWindow;
 	}
 
-	public ArrayList<Student> getStudents()
+	public DefaultListModel<Student> getStudentModel()
 	{
 		return students;
 	}
+	
+	public ArrayList<Student> getStudents()
+	{
+		ArrayList<Student> result = new ArrayList<Student>();
+		for (Object s : students.toArray())
+			result.add((Student) s);
+		return result;
+	}
 
-	public void setStudents(ArrayList<Student> newList)
+	public void setStudents(DefaultListModel<Student> newList)
 	{
 		students = newList;
 	}

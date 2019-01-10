@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -21,7 +20,7 @@ public class ScoreWindow extends JFrame
 {
 	private WindowHandler windowHandler;
 	private StudentScoresWindow studentScoresWindow;
-	private ArrayList<Student> students;
+	private DefaultListModel<Student> students;
 	private JList<Student> studentList;
 
 	public ScoreWindow(WindowHandler handler) // creates a window where the user
@@ -30,7 +29,7 @@ public class ScoreWindow extends JFrame
 	{
 		windowHandler = handler;
 		studentScoresWindow = null;
-		students = handler.getStudents();
+		students = handler.getStudentModel();
 		initWindow(400, 740);
 	}
 
@@ -64,10 +63,7 @@ public class ScoreWindow extends JFrame
 
 		studentList = new JList<Student>(); // JList of students for the user to
 											// choose from
-		studentList.setModel(new DefaultListModel<Student>());
-		DefaultListModel<Student> studentListModel = (DefaultListModel<Student>) studentList.getModel();
-		for (Student s : students)
-			studentListModel.addElement(s);
+		studentList.setModel(students);
 
 		studentList.setBorder(null);
 		studentList.setFont(new Font("Arial Black", Font.PLAIN, 20));

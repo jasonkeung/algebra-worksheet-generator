@@ -19,14 +19,14 @@ import javax.swing.border.LineBorder;
 public class GenerateWindow extends JFrame
 {
 	private WindowHandler windowHandler;
-	private ArrayList<Student> students;
+	private DefaultListModel<Student> students;
 	private JList<Student> studentList;
 
 	public GenerateWindow(WindowHandler handler) //creates a window where the user can select a student to generate a worksheet for
 	{
 		setResizable(false);
 		windowHandler = handler;
-		students = handler.getStudents();
+		students = handler.getStudentModel();
 		initWindow(400, 740);
 	}
 
@@ -56,10 +56,7 @@ public class GenerateWindow extends JFrame
 		getContentPane().add(btnBack);
 
 		studentList = new JList<Student>(); //JList of students for the user to choose from
-		studentList.setModel(new DefaultListModel<Student>());
-		DefaultListModel<Student> studentListModel = (DefaultListModel<Student>)studentList.getModel();
-		for(Student s : students)
-			studentListModel.addElement(s);
+		studentList.setModel(students);
 		studentList.setBorder(null);
 		studentList.setFont(new Font("Arial Black", Font.PLAIN, 20));
 		studentList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

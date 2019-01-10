@@ -2,17 +2,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeSet;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -26,17 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.event.ListSelectionListener;
@@ -45,9 +27,10 @@ import javax.swing.event.ListSelectionEvent;
 public class StudentWindow extends JFrame
 {
 	private WindowHandler windowHandler;
-	private ArrayList<Student> filteredStudents, allStudents;
+	private ArrayList<Student> allStudents;
+	private DefaultListModel<Student> studentListModel;
 	private JList<Student> studentList;
-	private ArrayList<Worksheet> studentWorksheets;
+	private DefaultListModel<Worksheet> studentWorksheetModel;
 	private JPanel rightPanel;
 	private JLabel lblStudentName, lblStudentLevel;
 	private JTextField searchStudentField;
@@ -58,8 +41,8 @@ public class StudentWindow extends JFrame
 	public StudentWindow(WindowHandler handler) //creates a window where the user can manage students and view student information
 	{
 		windowHandler = handler;
-		filteredStudents = handler.getStudents();
 		allStudents = handler.getStudents();
+		studentListModel = handler.getStudentModel();
 		initWindow(800, 800);
 		searchStudentField.transferFocus();
 	}
@@ -97,10 +80,7 @@ public class StudentWindow extends JFrame
 		getContentPane().add(leftPanel);
 
 		studentList = new JList<Student>(); //JList containing all the Student objects loaded from the data file
-		studentList.setModel(new DefaultListModel<Student>());
-		DefaultListModel<Student> studentListModel = (DefaultListModel<Student>)studentList.getModel();
-		for(Student s : filteredStudents)
-			studentListModel.addElement(s);
+		studentList.setModel(studentListModel);
 		studentList.addListSelectionListener(new ListSelectionListener()
 		{
 			public void valueChanged(ListSelectionEvent arg0)
@@ -124,14 +104,13 @@ public class StudentWindow extends JFrame
 		searchStudentField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				
-				filteredStudents.clear();
+				studentListModel.removeAllElements();
 				for (int i = 0; i < allStudents.size(); i++)
 				{
 					Student tempStudent = allStudents.get(i);
 					String searchString =  tempStudent.getLastName() + ", " + tempStudent.getFirstName();
 					if(searchString.contains(searchStudentField.getText()))
-						filteredStudents.add(tempStudent);
+						studentListModel.addElement(tempStudent);
 				}
 			}
 		});
@@ -156,11 +135,10 @@ public class StudentWindow extends JFrame
 				{
 					searchStudentField.setText("Search by Student Name");
 					searchStudentField.setForeground(Color.GRAY);
-					filteredStudents.clear();
-					for (int i = 0; i < allStudents.size(); i++)
+					studentListModel.removeAllElements();
+					for (Student tempStudent:allStudents)
 					{
-						Student tempStudent = allStudents.get(i);
-						filteredStudents.add(tempStudent);
+						studentListModel.addElement(tempStudent);
 					}
 				}
 				
@@ -201,10 +179,9 @@ public class StudentWindow extends JFrame
 			{
 				int[] indicesToDelete = studentList.getSelectedIndices();
 				
-				
 				for (int i = indicesToDelete.length - 1; i >= 0; i--)
 				{
-					Student student = filteredStudents.remove(indicesToDelete[i]); // delete from both lists, make sure right indices bc will be different
+					Student student = studentListModel.remove(indicesToDelete[i]); // delete from both lists, make sure right indices bc will be different
 					allStudents.remove(student);
 				}
 				windowHandler.saveStudents();
@@ -241,13 +218,10 @@ public class StudentWindow extends JFrame
 		lblStudentLevel.setBounds(11, 71, 373, 30);
 		studentInfoPanel.add(lblStudentLevel);
 
-		studentWorksheets = new ArrayList<Worksheet>();
+		studentWorksheetModel = new DefaultListModel<Worksheet>();
 
 		JList<Worksheet> worksheetList = new JList<Worksheet>();
-		worksheetList.setModel(new DefaultListModel<Worksheet>());
-		DefaultListModel<Worksheet> worksheetListModel = (DefaultListModel<Worksheet>)worksheetList.getModel();
-		for(Worksheet ws : studentWorksheets)
-			worksheetListModel.addElement(ws);
+		worksheetList.setModel(studentWorksheetModel);
 		worksheetList.setFont(new Font("Arial Black", Font.PLAIN, 16));
 		worksheetList.setBorder(null);
 		worksheetList.setBounds(11, 111, 372, 448);
@@ -279,16 +253,16 @@ public class StudentWindow extends JFrame
 		{
 			lblStudentName.setText(s.getLastName() + ", " + s.getFirstName());
 			lblStudentLevel.setText("Difficulty: " + s.getLevel());
-			studentWorksheets.clear();
+			studentWorksheetModel.clear();
 			for (Worksheet sheet : s.getWorksheets())
 			{
-				studentWorksheets.add(sheet);
+				studentWorksheetModel.addElement(sheet);
 			}
 		} else
 		{
 			lblStudentName.setText("");
 			lblStudentLevel.setText("");
-			studentWorksheets.clear();
+			studentWorksheetModel.clear();
 		}
 
 	}
@@ -418,7 +392,7 @@ public class StudentWindow extends JFrame
 							&& allStudents.get(indexToInsert).compareTo(newStudent) <= 0)
 						indexToInsert++;
 					allStudents.add(indexToInsert, newStudent);
-					
+					studentListModel.add(indexToInsert, newStudent);
 					searchStudentField.setText("");
 					searchStudentField.requestFocus(); // to trigger searchStudentField's loseFocus event
 					firstNameField.requestFocus();     // to trigger searchStudentField's loseFocus event
