@@ -238,7 +238,7 @@ public class StudentWindow extends JFrame
 		JLabel lblCtrlInfo = new JLabel("Hold Ctrl to select multiple students");
 		lblCtrlInfo.setForeground(Color.GRAY);
 		lblCtrlInfo.setFont(new Font("Arial", Font.ITALIC, 12));
-		lblCtrlInfo.setBounds(178, 752, 199, 14);
+		lblCtrlInfo.setBounds(160, 752, 250, 14);
 		getContentPane().add(lblCtrlInfo);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
