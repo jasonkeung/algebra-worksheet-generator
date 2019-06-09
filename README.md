@@ -1,6 +1,6 @@
 # Algebra Worksheet Generator
 
-This is a Java based GUI application that generates one-variable algebraic equations for students to solve. Students scores on worksheets generated for them can be tracked, and a numerical difficulty is kept and updated based on worksheet scores. Worksheets are generated based on each student's difficulty value; worksheets get harder with the introduction of larger numbers, multiplication/division, and two steps to solve. Upon worksheet completion, scores can be entered by the user for each student and their difficulties are adjusted accordingly. Generated worksheets are basic .txt files with six problems each and appear in the same directory as AlgebraWorksheetGenerator.jar
+This is a Java desktop application to generate one-variable algebraic equations for students to solve. Scores can be entered by the user for each student and a numerical difficulty is adjusted accordingly. Worksheet difficulty increases with the introduction of larger numbers, multiplication/division, and two steps to solve. Generated worksheets are basic .txt files with six problems each and appear in the same directory as AlgebraWorksheetGenerator.jar
 
 ## Getting Started
 
